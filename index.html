@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maria's Grade 5 Interactive Grammar Worksheet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Bubblegum Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .heading-font {
+            font-family: 'Fredoka', cursive;
+        }
+        .slash-btn {
+            transition: all 0.2s ease;
+        }
+        .slash-active {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+        .word-select {
+            cursor: pointer;
+            padding: 2px 4px;
+            margin: 0 1px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+            display: inline-block;
+        }
+        .word-select:hover {
+            background-color: #e0e7ff;
+        }
+        .word-selected-subject {
+            background-color: #fef08a; /* Yellow circle effect */
+            border: 2px solid #ca8a04;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .word-selected-predicate {
+            background-color: #bae6fd; /* Blue highlight */
+            border-bottom: 3px solid #0284c7;
+            font-weight: 600;
+        }
+        .word-selected-both {
+            background-color: #fde047;
+            border: 2px dashed #0284c7;
+            border-radius: 9999px;
+            font-weight: bold;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        /* Printable view support */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            .card-box { border: 1px solid #ccc; shadow: none; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased pb-12">
+
+    <!-- Top Bar Header -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-400 text-indigo-900 w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl shadow">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="heading-font text-xl md:text-2xl font-bold leading-tight">Maria's Grammar Exam companion</h1>
+                    <p class="text-xs text-indigo-200">Imperial International School • Grade 5 (2026-2027)</p>
+                </div>
+            </div>
+
+            <!-- Audio & Audio Controls Toolbar -->
+            <div class="flex items-center space-x-2 bg-indigo-800/80 backdrop-blur p-2 rounded-xl border border-indigo-600">
+                <button id="btnReadSelection" onclick="speakCurrentFocus()" class="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-semibold rounded-lg text-sm flex items-center gap-1.5 shadow transition transform active:scale-95" title="Read Aloud Highlighted or Focused Section">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span>Read Text</span>
+                </button>
+                <button id="btnStopAudio" onclick="stopSpeech()" class="p-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-sm flex items-center justify-center transition" title="Stop Audio">
+                    <i class="fa-solid fa-square"></i>
+                </button>
+                <div class="h-6 w-px bg-indigo-500 mx-1"></div>
+                <label class="text-xs font-medium text-indigo-200 flex items-center gap-1">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <select id="voiceSpeed" class="bg-indigo-900 text-white text-xs rounded border border-indigo-500 px-1 py-1 focus:outline-none">
+                        <option value="0.8">0.8x Slow</option>
+                        <option value="1" selected>1.0x Normal</option>
+                        <option value="1.2">1.2x Fast</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- Header Card replicating document header -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8 border-t-8 border-indigo-600">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 pb-4 mb-4">
+                <div>
+                    <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">Cognia Accredited</span>
+                    <h2 class="text-2xl font-extrabold text-gray-800">Grammar Interactive Assessment</h2>
+                    <p class="text-sm text-gray-500">Ministry of Education • Imperial Int. School (مدرسة الفخامة العالمية)</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 w-full md:w-auto">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500 text-xs uppercase block font-semibold">Student Name</span>
+                            <span class="font-bold text-indigo-900 text-lg">Maria</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500 text-xs uppercase block font-semibold">Grade</span>
+                            <span class="font-bold text-indigo-900 text-lg">Grade 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Navigation / Progress Indicator -->
+            <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+                <div class="flex items-center space-x-2 text-slate-600">
+                    <i class="fa-solid fa-book-open text-indigo-600"></i>
+                    <span>Worksheets: <strong>Part I (Sentences & Commands)</strong> & <strong>Part II (Subjects, Predicates & Commas)</strong></span>
+                </div>
+                <div class="flex gap-2 no-print">
+                    <button onclick="checkAllAnswers()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> Check All Answers
+                    </button>
+                    <button onclick="resetExam()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition">
+                        <i class="fa-solid fa-rotate-right"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1: SENTENCES, COMMANDS AND EXCLAMATIONS -->
+        <section class="bg-white rounded-2xl shadow-md p-6 mb-8 border border-slate-200">
+            <div class="flex items-center justify-between bg-indigo-50 -mx-6 -mt-6 p-6 rounded-t-2xl border-b border-indigo-100 mb-6">
+                <div>
+                    <h3 class="heading-font text-xl font-bold text-indigo-900">Part 1: Sentences, Commands & Exclamations</h3>
+                    <p class="text-xs text-indigo-700 mt-1">Sentences, Fragments, Sentence Types, and End Punctuation</p>
+                </div>
+                <button onclick="speakText('Part 1: Sentences, Commands and Exclamations. Learn to identify sentences, fragments, statements, questions, commands, and exclamations.')" class="text-indigo-600 hover:text-indigo-800 text-lg p-2 rounded-full hover:bg-indigo-100 transition" title="Listen to section introduction">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+
+            <!-- Rules Box -->
+            <div class="bg-slate-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 text-sm text-slate-700 space-y-1">
+                <p><strong>• Sentence:</strong> A group of words that expresses a complete thought (starts with capital letter, ends with punctuation).</p>
+                <p><strong>• Fragment:</strong> A group of words that does not express a complete thought (e.g., <em>"Went to the store."</em>)</p>
+                <p><strong>• Statement:</strong> Tells something (ends with a period <code>.</code>).</p>
+                <p><strong>• Question:</strong> Asks something (ends with a question mark <code>?</code>).</p>
+                <p><strong>• Command:</strong> Tells someone to do something (ends with <code>.</code> or <code>!</code>).</p>
+                <p><strong>• Exclamation:</strong> Expresses strong feeling (ends with <code>!</code>).</p>
+            </div>
+
+            <!-- Section 1.A: Sentences vs Fragments -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">A. Decide whether each group of words is a Sentence (S) or a Fragment (F).</h4>
+                    <button onclick="speakText('Decide whether each group of words is a Sentence or a Fragment.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="section-1a">
+                    <!-- Dynamic rendering target for 1.A -->
+                </div>
+            </div>
+
+            <!-- Section 1.B: Name the Type of Sentence -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">B. Read each group of words. Write Statement, Question, Command, or Exclamation.</h4>
+                    <button onclick="speakText('Read each group of words. Write statement, question, command, or exclamation to name the type of sentence.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-1b">
+                    <!-- Dynamic rendering target for 1.B -->
+                </div>
+            </div>
+
+            <!-- Section 1.C: Add proper punctuation & sentence type -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">C. Add the proper punctuation to the end of each sentence. Then write whether it is a Statement, Question, Command, or Exclamation.</h4>
+                    <button onclick="speakText('Add the proper punctuation to the end of each sentence. Then select whether the sentence is a statement, question, command, or exclamation.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-1c">
+                    <!-- Dynamic target for 1.C -->
+                </div>
+            </div>
+
+            <!-- Section 1.D: Do as shown in brackets -->
+            <div class="border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">D. Do as shown in the brackets (Write your own sentences).</h4>
+                    <button onclick="speakText('Do as shown in the brackets. Write your custom sentences.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="section-1d">
+                    <!-- Dynamic target for 1.D -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SUBJECTS, PREDICATES & COMMAS -->
+        <section class="bg-white rounded-2xl shadow-md p-6 mb-8 border border-slate-200">
+            <div class="flex items-center justify-between bg-indigo-50 -mx-6 -mt-6 p-6 rounded-t-2xl border-b border-indigo-100 mb-6">
+                <div>
+                    <h3 class="heading-font text-xl font-bold text-indigo-900">Part 2: Subjects, Predicates & Commas</h3>
+                    <p class="text-xs text-indigo-700 mt-1">Simple & Complete Subjects/Predicates, Compound Subjects & Commas</p>
+                </div>
+                <button onclick="speakText('Part 2: Subjects, Predicates, Compound Subjects and Predicates, and Commas.')" class="text-indigo-600 hover:text-indigo-800 text-lg p-2 rounded-full hover:bg-indigo-100 transition" title="Listen to section introduction">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+
+            <!-- Rules Box 2 -->
+            <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 rounded-r-xl mb-6 text-sm text-slate-700 space-y-1">
+                <p><strong>• Simple Subject:</strong> Main noun/pronoun naming whom/what the sentence is about.</p>
+                <p><strong>• Complete Subject:</strong> Includes all words telling who/what the sentence is about.</p>
+                <p><strong>• Simple Predicate:</strong> The verb telling exactly what the subject does or is.</p>
+                <p><strong>• Complete Predicate:</strong> The verb and all words telling what the subject does or is.</p>
+            </div>
+
+            <!-- Section 2.A: Identify words/phrases as subject or predicate -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">A. Identify the words or phrases as Subject or Predicate.</h4>
+                    <button onclick="speakText('Identify the words or phrases as subjects or predicates.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="section-2a">
+                    <!-- Dynamic Target 2.A -->
+                </div>
+            </div>
+
+            <!-- Section 2.B: Insert Slash between simple subject & simple predicate -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h4 class="font-bold text-lg text-slate-800">B. Identify simple subjects and predicates. Click between words to insert a slash ( / ).</h4>
+                        <p class="text-xs text-slate-500">Click the small slash spot between the two words where the subject ends and predicate starts.</p>
+                    </div>
+                    <button onclick="speakText('Identify simple subjects and predicates. Click to insert a slash between them.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="section-2b">
+                    <!-- Dynamic Target 2.B -->
+                </div>
+            </div>
+
+            <!-- Section 2.C: What part of the sentence is underlined? -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">C. What part of the sentence is underlined? Circle/select the correct answer.</h4>
+                    <button onclick="speakText('What part of the sentence is underlined? Select the correct answer.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-2c">
+                    <!-- Dynamic Target 2.C -->
+                </div>
+            </div>
+
+            <!-- Section 2.D: Complete subject (underline) & Simple subject (circle) -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h4 class="font-bold text-lg text-slate-800">D. Interactive: Underline the Complete Subject and Circle the Simple Subject.</h4>
+                        <p class="text-xs text-slate-500">Click words to toggle selecting the <strong>Simple Subject (Yellow Circle)</strong> or select the <strong>Complete Subject</strong> range.</p>
+                    </div>
+                    <button onclick="speakText('In each sentence, identify the complete subject and simple subject.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-2d">
+                    <!-- Dynamic Target 2.D -->
+                </div>
+            </div>
+
+            <!-- Section 2.E: Complete predicate & Simple predicate -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h4 class="font-bold text-lg text-slate-800">E. Interactive: Underline Complete Predicate & Circle Simple Predicate.</h4>
+                        <p class="text-xs text-slate-500">Click words to toggle highlighting the predicate components.</p>
+                    </div>
+                    <button onclick="speakText('In each sentence below, underline the complete predicate, and circle the simple predicate.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-2e">
+                    <!-- Dynamic Target 2.E -->
+                </div>
+            </div>
+
+            <!-- Section 2.F: Compound Subjects and Predicates -->
+            <div class="mb-8 border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800">F. Write whether the underlined words are Compound Subject or Compound Predicate.</h4>
+                    <button onclick="speakText('Write whether the underlined words are compound subjects or compound predicates.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="section-2f">
+                    <!-- Dynamic Target 2.F -->
+                </div>
+            </div>
+
+            <!-- Section 2.G: Commas -->
+            <div class="border-t border-slate-200 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h4 class="font-bold text-lg text-slate-800">G. Commas: Rewrite each sentence placing commas where they belong.</h4>
+                        <p class="text-xs text-slate-500">Remember: Series commas (apples, bananas, and oranges) and Appositives (Iggy, our lizard, sat still).</p>
+                    </div>
+                    <button onclick="speakText('Rewrite each sentence. Place commas where they belong.')" class="text-indigo-600 hover:text-indigo-800 text-sm"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                </div>
+
+                <div class="space-y-4" id="section-2g">
+                    <!-- Dynamic Target 2.G -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Submission & Score Banner -->
+        <div class="bg-indigo-900 text-white rounded-2xl p-6 text-center shadow-xl mb-12">
+            <h3 class="heading-font text-2xl font-bold mb-2">Ready to Check Maria's Work?</h3>
+            <p class="text-indigo-200 text-sm mb-6">Click below to evaluate all responses, get dynamic visual feedback, and see total score!</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="checkAllAnswers()" class="px-8 py-3 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-bold text-lg rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-circle-check"></i> Evaluate Exam
+                </button>
+                <button onclick="resetExam()" class="px-6 py-3 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold rounded-xl transition">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> Start Over
+                </button>
+            </div>
+            <div id="scoreDisplay" class="hidden mt-6 pt-6 border-t border-indigo-700 text-center">
+                <span class="text-indigo-300 text-sm uppercase tracking-widest block mb-1">Total Result</span>
+                <div id="scoreValue" class="text-4xl font-black text-amber-300">0 / 0</div>
+                <p id="scoreMessage" class="mt-2 text-indigo-100 font-medium"></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Data Definitions for Part 1
+        const data1A = [
+            { id: '1a_1', text: '1. Daniel can come.', correct: 'S' },
+            { id: '1a_2', text: "2. I didn't know that.", correct: 'S' },
+            { id: '1a_3', text: '3. Went to the store.', correct: 'F' },
+            { id: '1a_4', text: '4. Singing loudly all day long.', correct: 'F' },
+            { id: '1a_5', text: '5. Once they get here.', correct: 'F' },
+            { id: '1a_6', text: '6. What time will they be here?', correct: 'S' },
+            { id: '1a_7', text: '7. Long, long ago, in a faraway land.', correct: 'F' },
+            { id: '1a_8', text: '8. The most beautiful girl in the land.', correct: 'F' },
+            { id: '1a_9', text: '9. She was still very unhappy.', correct: 'S' },
+            { id: '1a_10', text: '10. Her 21st birthday was approaching.', correct: 'S' },
+            { id: '1a_11', text: '11. Her twin brother, Prince Reginald, would become king.', correct: 'S' },
+            { id: '1a_12', text: '12. She would have to marry King Jomen of Far Land.', correct: 'S' },
+            { id: '1a_13', text: '13. A very cruel and unkind man.', correct: 'F' },
+            { id: '1a_14', text: '14. She decided to run away and formed an excellent plan.', correct: 'S' }
+        ];
+
+        const data1B = [
+            { id: '1b_1', text: '1. Please set the table for lunch.', correct: 'command' },
+            { id: '1b_2', text: '2. Have you ever roasted a turkey?', correct: 'question' },
+            { id: '1b_3', text: '3. What a beautiful day!', correct: 'exclamation' },
+            { id: '1b_4', text: '4. Today is Sunday.', correct: 'statement' }
+        ];
+
+        const data1C = [
+            { id: '1c_1', text: '1. Where are the maps', correctPunct: '?', correctType: 'question' },
+            { id: '1c_2', text: '2. I had them in my backpack', correctPunct: '.', correctType: 'statement' },
+            { id: '1c_3', text: '3. Help me look for them', correctPunct: '.', correctType: 'command' },
+            { id: '1c_4', text: '4. We don\'t want to get lost', correctPunct: '.', correctType: 'statement' },
+            { id: '1c_5', text: '5. I\'m so angry about losing them', correctPunct: '!', correctType: 'exclamation' },
+            { id: '1c_6', text: '6. Can we find the way home on our own', correctPunct: '?', correctType: 'question' },
+            { id: '1c_7', text: '7. Maria is a student at our school', correctPunct: '.', correctType: 'statement' },
+            { id: '1c_8', text: '8. Who is your teacher', correctPunct: '?', correctType: 'question' }
+        ];
+
+        const data1D = [
+            { id: '1d_1', prompt: 'Write a statement', example: 'Maria reads interesting books every evening.' },
+            { id: '1d_2', prompt: 'Write a question', example: 'What time does the grammar class start?' },
+            { id: '1d_3', prompt: 'Write an exclamation sentence', example: 'What a magnificent sunset this is!' },
+            { id: '1d_4', prompt: 'Write a command sentence', example: 'Please open your textbook to page ten.' }
+        ];
+
+        // Data Definitions for Part 2
+        const data2A = [
+            { id: '2a_1', text: '1. Jamal', correct: 'subject' },
+            { id: '2a_2', text: '2. My best friend Rashid', correct: 'subject' },
+            { id: '2a_3', text: '3. peered closely at the plant.', correct: 'predicate' },
+            { id: '2a_4', text: '4. walked', correct: 'predicate' }
+        ];
+
+        const data2B = [
+            { id: '2b_1', text: ['Felicia', 'explored.'], slashIndex: 0 },
+            { id: '2b_2', text: ['Han', 'studied.'], slashIndex: 0 },
+            { id: '2b_3', text: ['Dr. Smith', 'hiked.'], slashIndex: 0 },
+            { id: '2b_4', text: ['We', 'organized.'], slashIndex: 0 }
+        ];
+
+        const data2C = [
+            { id: '2c_1', text: '1. Their nearest neighbors <u>go into town with them</u>.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Predicate' },
+            { id: '2c_2', text: '2. <u>The young boy</u> rode the bus to school.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Subject' },
+            { id: '2c_3', text: '3. My cousin <u>lives</u> on a big ranch in Montana.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Simple Predicate' },
+            { id: '2c_4', text: '4. <u>My teacher Mrs. Hill</u> likes museums.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Subject' },
+            { id: '2c_5', text: '5. John <u>spreads</u> fresh hey in the pasture.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Simple Predicate' },
+            { id: '2c_6', text: '6. The two playful children <u>made up a new game</u>.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Predicate' },
+            { id: '2c_7', text: '7. Her family <u>raises</u> cattle on the ranch.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Simple Predicate' },
+            { id: '2c_8', text: '8. <u>My sister\'s friend Ana</u> plays soccer.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Subject' },
+            { id: '2c_9', text: '9. The friendly dog <u>ran very fast</u>.', options: ['Simple Subject', 'Complete Subject', 'Simple Predicate', 'Complete Predicate'], correct: 'Complete Predicate' }
+        ];
+
+        const data2D = [
+            { id: '2d_1', words: ['The', 'seven-grade', 'student', 'typed', 'on', 'the', 'computer', 'keyboard.'], simpleIndex: 2, completeRange: [0, 1, 2] },
+            { id: '2d_2', words: ['The', 'first-grade', 'teacher', 'wrote', 'the', 'lesson', 'on', 'the', 'board.'], simpleIndex: 2, completeRange: [0, 1, 2] },
+            { id: '2d_3', words: ['My', 'favorite', 'video', 'game', 'was', 'on', 'sale', 'at', 'the', 'store.'], simpleIndex: 3, completeRange: [0, 1, 2, 3] }
+        ];
+
+        const data2E = [
+            { id: '2e_1', words: ['Alan', 'and', 'Bryan', 'walked', 'to', 'the', 'store', 'on', 'Main', 'Street', 'after', 'school.'], simpleIndex: 3, completeRange: [3, 4, 5, 6, 7, 8, 9, 10, 11] },
+            { id: '2e_2', words: ['The', 'enthusiastic', 'fans', 'cheered', 'when', 'they', 'saw', 'the', 'soccer', 'game', 'score.'], simpleIndex: 3, completeRange: [3, 4, 5, 6, 7, 8, 9, 10] },
+            { id: '2e_3', words: ['The', 'tired', 'principal', 'got', 'into', 'her', 'car', 'at', 'the', 'end', 'of', 'the', 'day.'], simpleIndex: 3, completeRange: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+            { id: '2e_4', words: ['The', 'daylight', 'hours', 'grow', 'shorter', 'every', 'day.'], simpleIndex: 3, completeRange: [3, 4, 5, 6] }
+        ];
+
+        const data2F = [
+            { id: '2f_1', text: '1. The journalist <u>reads and writes</u> a lot.', correct: 'compound predicate' },
+            { id: '2f_2', text: '2. <u>Neither Julia nor her friend</u> participated.', correct: 'compound subject' },
+            { id: '2f_3', text: '3. Can you <u>either clean the table or do the dishes</u>?', correct: 'compound predicate' },
+            { id: '2f_4', text: '4. She and I <u>either read together or work</u> on my homework problems.', correct: 'compound predicate' },
+            { id: '2f_5', text: '5. <u>The squirrels and the chipmunks</u> are gathering acorns.', correct: 'compound subject' },
+            { id: '2f_6', text: '6. <u>The cat and dog</u> get along very well.', correct: 'compound subject' },
+            { id: '2f_7', text: '7. We <u>could drive or walk</u> to school.', correct: 'compound predicate' },
+            { id: '2f_8', text: '8. <u>Our class and Mr. Smith\'s class</u> rode the bus together.', correct: 'compound subject' }
+        ];
+
+        const data2G = [
+            { id: '2g_1', orig: '1. My brother sister and father will attend today\'s game.', answer: 'My brother, sister, and father will attend today\'s game.' },
+            { id: '2g_2', orig: '2. My parents have hired a tutor to help me with my reading writing and spelling.', answer: 'My parents have hired a tutor to help me with my reading, writing, and spelling.' },
+            { id: '2g_3', orig: '3. I also need help with science my hardest subject.', answer: 'I also need help with science, my hardest subject.' },
+            { id: '2g_4', orig: '4. We meet almost every Monday Tuesday and Thursday.', answer: 'We meet almost every Monday, Tuesday, and Thursday.' }
+        ];
+
+        // Audio Speech Synthesis Engine with fallback for Safari/iOS
+        let synth = window.speechSynthesis;
+        
+        function speakText(text) {
+            if (!synth) {
+                alert("Speech synthesis is not supported on this browser.");
+                return;
+            }
+            // Stop any ongoing speech
+            synth.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const speedSelect = document.getElementById('voiceSpeed');
+            utterance.rate = speedSelect ? parseFloat(speedSelect.value) : 1.0;
+            
+            // Try to set an English voice preferred by Safari/system
+            const voices = synth.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel') || v.name.includes('Google') || v.default));
+            if (englishVoice) {
+                utterance.voice = englishVoice;
+            }
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if (synth) synth.cancel();
+        }
+
+        function speakCurrentFocus() {
+            // Read selection if available
+            const selectedText = window.getSelection().toString();
+            if (selectedText.trim().length > 0) {
+                speakText(selectedText);
+                return;
+            }
+            // Otherwise read full header summary
+            speakText("Maria's Grade 5 English Grammar Interactive Worksheet. Complete all questions, then click evaluate exam.");
+        }
+
+        // Initialize Speech Voices for Safari on page load
+        if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => { synth = window.speechSynthesis; };
+        }
+
+        // DOM Rendering Functions
+        function render1A() {
+            const container = document.getElementById('section-1a');
+            container.innerHTML = data1A.map(item => `
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between" id="card-${item.id}">
+                    <span class="text-sm font-medium text-slate-700 flex-1 mr-2">${item.text}</span>
+                    <div class="flex gap-2">
+                        <button onclick="selectOption('${item.id}', 'S')" id="btn-${item.id}-S" class="px-3 py-1 bg-white border border-slate-300 font-bold rounded-lg text-xs hover:bg-indigo-50 transition">S</button>
+                        <button onclick="selectOption('${item.id}', 'F')" id="btn-${item.id}-F" class="px-3 py-1 bg-white border border-slate-300 font-bold rounded-lg text-xs hover:bg-indigo-50 transition">F</button>
+                        <button onclick="speakText('${item.text.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-600 px-1"><i class="fa-solid fa-volume-low text-xs"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render1B() {
+            const container = document.getElementById('section-1b');
+            const types = ['statement', 'question', 'command', 'exclamation'];
+            container.innerHTML = data1B.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3" id="card-${item.id}">
+                    <div class="flex items-center gap-2">
+                        <button onclick="speakText('${item.text.replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high"></i></button>
+                        <span class="text-slate-800 font-medium">${item.text}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${types.map(t => `
+                            <button onclick="selectOption('${item.id}', '${t}')" id="btn-${item.id}-${t}" class="px-3 py-1 bg-white border border-slate-300 text-xs font-semibold rounded-lg capitalize hover:bg-indigo-50 transition">${t}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render1C() {
+            const container = document.getElementById('section-1c');
+            const types = ['statement', 'question', 'command', 'exclamation'];
+            const puncts = ['.', '?', '!'];
+            container.innerHTML = data1C.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4" id="card-${item.id}">
+                    <div class="flex items-center gap-2 flex-1">
+                        <button onclick="speakText('${item.text.replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high"></i></button>
+                        <span class="text-slate-800 font-medium">${item.text}</span>
+                        <!-- Punctuation Selector -->
+                        <div class="inline-flex rounded-md shadow-sm ml-2">
+                            ${puncts.map(p => `
+                                <button onclick="selectPunct('${item.id}', '${p}')" id="punct-${item.id}-${p}" class="px-2 py-0.5 border border-slate-300 bg-white text-indigo-700 font-bold text-sm hover:bg-indigo-100">${p}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <!-- Type Selector -->
+                    <div class="flex flex-wrap gap-1.5">
+                        ${types.map(t => `
+                            <button onclick="selectOption('${item.id}', '${t}')" id="btn-${item.id}-${t}" class="px-2.5 py-1 bg-white border border-slate-300 text-xs font-medium rounded-lg capitalize hover:bg-indigo-50 transition">${t}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render1D() {
+            const container = document.getElementById('section-1d');
+            container.innerHTML = data1D.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2" id="card-${item.id}">
+                    <label class="block font-semibold text-sm text-slate-700 flex items-center justify-between">
+                        <span>${item.prompt}</span>
+                        <button onclick="speakText('${item.prompt.replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                    </label>
+                    <input type="text" id="input-${item.id}" placeholder="e.g., ${item.example}" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            `).join('');
+        }
+
+        function render2A() {
+            const container = document.getElementById('section-2a');
+            container.innerHTML = data2A.map(item => `
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between" id="card-${item.id}">
+                    <span class="text-sm font-medium text-slate-800 flex-1 mr-2">${item.text}</span>
+                    <div class="flex gap-2">
+                        <button onclick="selectOption('${item.id}', 'subject')" id="btn-${item.id}-subject" class="px-3 py-1 bg-white border border-slate-300 font-medium rounded-lg text-xs hover:bg-indigo-50 transition">Subject</button>
+                        <button onclick="selectOption('${item.id}', 'predicate')" id="btn-${item.id}-predicate" class="px-3 py-1 bg-white border border-slate-300 font-medium rounded-lg text-xs hover:bg-indigo-50 transition">Predicate</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render2B() {
+            const container = document.getElementById('section-2b');
+            container.innerHTML = data2B.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between" id="card-${item.id}">
+                    <div class="text-slate-800 font-medium flex items-center gap-1 text-base">
+                        <span>${item.id.replace('2b_', '')}. ${item.text[0]}</span>
+                        <button onclick="toggleSlash('${item.id}')" id="slash-${item.id}" class="slash-btn border border-dashed border-red-400 text-red-500 rounded px-2 py-0.5 mx-1 font-bold text-sm bg-red-50 hover:bg-red-100" title="Click to place subject/predicate divider slash text">
+                            /
+                        </button>
+                        <span>${item.text[1]}</span>
+                    </div>
+                    <button onclick="speakText('${item.text.join(' ')}')" class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function render2C() {
+            const container = document.getElementById('section-2c');
+            container.innerHTML = data2C.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3" id="card-${item.id}">
+                    <div class="flex items-center justify-between">
+                        <div class="text-slate-800 font-medium">${item.text}</div>
+                        <button onclick="speakText('${item.text.replace(/<[^>]*>?/gm, '').replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        ${item.options.map(opt => `
+                            <button onclick="selectOption('${item.id}', '${opt}')" id="btn-${item.id}-${opt.replace(/\s+/g, '')}" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-indigo-50 transition text-center">${opt}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Word Selection Interactive Components for 2.D & 2.E
+        function renderWordInteractive(data, containerId, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3" id="card-${item.id}">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm font-semibold text-slate-500 uppercase tracking-wider">${item.id.replace('2d_', '2D #').replace('2e_', '2E #')}</div>
+                        <button onclick="speakText('${item.words.join(' ').replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 leading-relaxed text-base" id="words-${item.id}">
+                        ${item.words.map((w, idx) => `
+                            <span onclick="toggleWordSelection('${item.id}', ${idx}, '${type}')" id="word-${item.id}-${idx}" class="word-select hover:shadow-sm">
+                                ${w}
+                            </span>
+                        `).join('')}
+                    </div>
+                    <div class="text-xs text-slate-500 flex gap-4 pt-1">
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-yellow-200 border border-yellow-600 rounded-full inline-block"></span> Click to Circle Simple</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-1 bg-sky-500 inline-block"></span> Highlight Complete Range</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render2F() {
+            const container = document.getElementById('section-2f');
+            container.innerHTML = data2F.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between gap-3" id="card-${item.id}">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-800 font-medium text-sm">${item.text}</span>
+                        <button onclick="speakText('${item.text.replace(/<[^>]*>?/gm, '').replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="selectOption('${item.id}', 'compound subject')" id="btn-${item.id}-compoundsubject" class="flex-1 py-1.5 bg-white border border-slate-300 font-semibold rounded-lg text-xs hover:bg-indigo-50 transition">Compound Subject</button>
+                        <button onclick="selectOption('${item.id}', 'compound predicate')" id="btn-${item.id}-compoundpredicate" class="flex-1 py-1.5 bg-white border border-slate-300 font-semibold rounded-lg text-xs hover:bg-indigo-50 transition">Compound Predicate</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render2G() {
+            const container = document.getElementById('section-2g');
+            container.innerHTML = data2G.map(item => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2" id="card-${item.id}">
+                    <div class="flex items-center justify-between text-slate-700 font-medium text-sm">
+                        <span>${item.orig}</span>
+                        <button onclick="speakText('${item.orig.replace(/'/g, "\\'")}')" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-volume-high text-xs"></i></button>
+                    </div>
+                    <input type="text" id="input-${item.id}" placeholder="Type rewritten sentence with correct commas..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            `).join('');
+        }
+
+        // State Store
+        const userAnswers = {};
+        const wordSelections = {};
+
+        function selectOption(id, val) {
+            userAnswers[id] = val;
+            // Clear existing active styles for this ID
+            document.querySelectorAll(`[id^="btn-${id}-"]`).forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                b.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+            });
+            // Highlight selected button
+            const cleanVal = val.replace(/\s+/g, '');
+            const targetBtn = document.getElementById(`btn-${id}-${cleanVal}`);
+            if (targetBtn) {
+                targetBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+                targetBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+            }
+        }
+
+        function selectPunct(id, p) {
+            userAnswers[`${id}_punct`] = p;
+            document.querySelectorAll(`[id^="punct-${id}-"]`).forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white');
+                b.classList.add('bg-white', 'text-indigo-700');
+            });
+            const target = document.getElementById(`punct-${id}-${p}`);
+            if (target) {
+                target.classList.remove('bg-white', 'text-indigo-700');
+                target.classList.add('bg-indigo-600', 'text-white');
+            }
+        }
+
+        function toggleSlash(id) {
+            userAnswers[id] = !(userAnswers[id]);
+            const btn = document.getElementById(`slash-${id}`);
+            if (userAnswers[id]) {
+                btn.classList.add('slash-active');
+            } else {
+                btn.classList.remove('slash-active');
+            }
+        }
+
+        function toggleWordSelection(itemId, wordIdx, type) {
+            if (!wordSelections[itemId]) wordSelections[itemId] = { simple: null, complete: [] };
+
+            // Toggle logic for simple vs complete
+            if (wordSelections[itemId].simple === wordIdx) {
+                wordSelections[itemId].simple = null;
+            } else if (!wordSelections[itemId].complete.includes(wordIdx)) {
+                wordSelections[itemId].complete.push(wordIdx);
+                if (wordSelections[itemId].simple === null) {
+                    wordSelections[itemId].simple = wordIdx;
+                }
+            } else {
+                wordSelections[itemId].complete = wordSelections[itemId].complete.filter(i => i !== wordIdx);
+            }
+
+            // Update word UI classes
+            const wordEl = document.getElementById(`word-${itemId}-${wordIdx}`);
+            wordEl.className = 'word-select hover:shadow-sm';
+
+            const isSimple = wordSelections[itemId].simple === wordIdx;
+            const isComplete = wordSelections[itemId].complete.includes(wordIdx);
+
+            if (isSimple && isComplete) {
+                wordEl.classList.add('word-selected-both');
+            } else if (isSimple) {
+                wordEl.classList.add('word-selected-subject');
+            } else if (isComplete) {
+                wordEl.classList.add('word-selected-predicate');
+            }
+        }
+
+        function checkAllAnswers() {
+            let totalPoints = 0;
+            let earnedPoints = 0;
+
+            // Clear visual card borders
+            document.querySelectorAll('[id^="card-"]').forEach(c => {
+                c.classList.remove('border-emerald-500', 'border-rose-400', 'bg-emerald-50/30', 'bg-rose-50/30');
+            });
+
+            // Evaluate 1A
+            data1A.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === item.correct) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 1B
+            data1B.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === item.correct) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 1C
+            data1C.forEach(item => {
+                totalPoints += 2; // 1 for punct, 1 for type
+                const card = document.getElementById(`card-${item.id}`);
+                const punctCorrect = userAnswers[`${item.id}_punct`] === item.correctPunct;
+                const typeCorrect = userAnswers[item.id] === item.correctType;
+
+                if (punctCorrect && typeCorrect) {
+                    earnedPoints += 2;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    if (punctCorrect) earnedPoints += 1;
+                    if (typeCorrect) earnedPoints += 1;
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 1D (Custom typing answers checked for non-empty)
+            data1D.forEach(item => {
+                totalPoints++;
+                const input = document.getElementById(`input-${item.id}`);
+                const card = document.getElementById(`card-${item.id}`);
+                if (input && input.value.trim().length > 3) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2A
+            data2A.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === item.correct) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2B
+            data2B.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === true) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2C
+            data2C.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === item.correct) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2D & 2E
+            [...data2D, ...data2E].forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                const sel = wordSelections[item.id] || {};
+                const simpleMatch = sel.simple === item.simpleIndex;
+                const completeMatch = Array.isArray(sel.complete) && 
+                    item.completeRange.every(val => sel.complete.includes(val));
+
+                if (simpleMatch || completeMatch) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2F
+            data2F.forEach(item => {
+                totalPoints++;
+                const card = document.getElementById(`card-${item.id}`);
+                if (userAnswers[item.id] === item.correct) {
+                    earnedPoints++;
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                } else {
+                    card.classList.add('border-rose-400', 'bg-rose-50/30');
+                }
+            });
+
+            // Evaluate 2G (Commas normalized string comparison)
+            data2G.forEach(item => {
+                totalPoints++;
+                const input = document.getElementById(`input-${item.id}`);
+                const card = document.getElementById(`card-${item.id}`);
+                if (input) {
+                    const normalizedUser = input.value.replace(/\s+/g, ' ').trim().toLowerCase();
+                    const normalizedAns = item.answer.replace(/\s+/g, ' ').trim().toLowerCase();
+                    if (normalizedUser === normalizedAns || (normalizedUser.includes(',') && normalizedUser.length > 10)) {
+                        earnedPoints++;
+                        card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+                    } else {
+                        card.classList.add('border-rose-400', 'bg-rose-50/30');
+                    }
+                }
+            });
+
+            // Display Score Banner
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreMsg = document.getElementById('scoreMessage');
+
+            scoreDisplay.classList.remove('hidden');
+            scoreValue.textContent = `${earnedPoints} / ${totalPoints}`;
+            
+            const pct = (earnedPoints / totalPoints) * 100;
+            let msg = '';
+            if (pct >= 90) {
+                msg = '🌟 Outstanding work Maria! Excellent grammar knowledge!';
+            } else if (pct >= 70) {
+                msg = '👍 Great effort Maria! Review highlighted items to get a perfect score.';
+            } else {
+                msg = '💪 Good practice! Review the rules above and try again!';
+            }
+            scoreMsg.textContent = msg;
+
+            // Audio Announcement
+            speakText(`Exam evaluated! Maria scored ${earnedPoints} out of ${totalPoints}. ${msg}`);
+
+            // Scroll smoothly to score box
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetExam() {
+            if (confirm("Are you sure you want to reset all responses?")) {
+                location.reload();
+            }
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            render1A();
+            render1B();
+            render1C();
+            render1D();
+            render2A();
+            render2B();
+            render2C();
+            renderWordInteractive(data2D, 'section-2d', '2d');
+            renderWordInteractive(data2E, 'section-2e', '2e');
+            render2F();
+            render2G();
+        };
+    </script>
+</body>
+</html>
